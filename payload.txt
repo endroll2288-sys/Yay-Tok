@@ -1,0 +1,9 @@
+
+Request URL
+https://api.yay.space/v2/users/login_with_email
+{
+　"email":"OOOOO@gmail.com",
+  "password":"",
+  "api_key":"e9f1ae4c4470f29a92c0168dc42b13637cc332692103f23e626bc2b016f66603",
+  "uuid":"0e8a734c-e812-410b-8382-a5d790b79339"
+  }
