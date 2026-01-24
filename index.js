@@ -1,0 +1,131 @@
+//import express from 'express';
+//import axios from 'axios';
+//import cors from'cors';
+//import path from "path";
+
+const axios = require('axios');
+const express = require('express');
+const cors = require('cors');
+const path = require('path'); 
+const app = express();
+
+const PORT = 5000;
+
+
+
+app.use(express.static('public'));
+
+
+app.use(express.json());
+app.use(cors());
+
+
+
+app.get('/Threads', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'threads.html'));
+});
+
+
+
+
+app.post('/proxy/threads', async (req, res) => {
+   
+    const { Id, token, text } = req.body;
+
+  // console.log(req.body);
+
+    if (!Id || !token || !text) {
+        return res.status(400).json({ error: 'Missing parameters: userId, token, and text are required.' });
+    }
+
+    const targetUrl = `https://api.yay.space/v1/threads`;
+
+    try {
+        const response = await axios({
+            method: 'POST',
+            url: targetUrl,
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization':  `${token}`// Bearer プレフィックスが必要な場合は `${token}` と調整
+            },
+            data: {
+
+                "group_id":`${Id}`,
+                "title":`${text}`,
+                "thread_icon_filename":null
+               
+            }
+        });
+        console.log(response);
+      
+        // Yay! からのレスポンスをそのまま返す
+      
+        res.status(response.status).json(response.data);
+
+    } catch (error) {
+console.error(error);
+        console.error('Error forwarding request:', error.response?.data || error.message);
+
+        // エラーの場合はその内容を返す
+        res.status(error.response?.status || 500).json({
+            error: 'Failed to request Yay! API',
+            details: error.response?.data || error.message
+        });
+    }
+});
+
+
+
+
+
+app.post('/proxy/review', async (req, res) => {
+    
+    const { userId, token, text } = req.body;
+
+    //  console.log(req.body);
+
+    if (!userId || !token || !text) {
+        return res.status(400).json({ error: 'Missing parameters: userId, token, and text are required.' });
+    }
+
+    const targetUrl = `https://api.yay.space/v1/users/reviews/${userId}`;
+
+    try {
+        const response = await axios({
+            method: 'POST',
+            url: targetUrl,
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization':  `${token}`
+            },
+            data: {
+                comment:  `${text}`
+            }
+        });
+        console.log(response);
+        
+        res.status(response.status).json(response.data);
+
+    } catch (error) {
+console.error(error);
+        console.error('Error forwarding request:', error.response?.data || error.message);
+
+       
+        res.status(error.response?.status || 500).json({
+            error: 'Failed to request Yay! API',
+            details: error.response?.data || error.message
+        });
+    }
+});
+
+
+
+
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on http://0.0.0.0:${PORT}`);
+});
