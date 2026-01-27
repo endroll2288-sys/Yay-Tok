@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
 
 app.get('/review', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'review.html'));
 });
 
 
