@@ -119,10 +119,12 @@ console.error(error);
 });
 
 
-
-
-
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'home.html'));
+});
+
+
+app.get('/review', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
