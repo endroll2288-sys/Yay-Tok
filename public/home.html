@@ -1,1 +1,115 @@
 
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yayツール</title>
+    <style>
+        /* 基本設定 */
+        :root {
+            --primary-color: #4a90e2;
+            --hover-color: #357abd;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* メインコンテナ */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        /* タイトル */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+
+        /* リンクボタンのグリッドレイアウト */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* リンク（カードデザイン） */
+        .nav-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            text-decoration: none;
+            color: var(--text-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ホバー時のエフェクト */
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* アイコン（絵文字） */
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* リンクテキスト */
+        .label {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* モバイル対応 */
+        @media (max-width: 480px) {
+            .nav-grid {
+                grid-template-columns: 1fr; /* スマホでは縦並び */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Yayツール</h1>
+        
+        <div class="nav-grid">
+            <a href="/threads" class="nav-card">
+                <span class="icon">💬</span>
+                <span class="label">サークルスレッド</span>
+            </a>
+
+            <a href="/review" class="nav-card">
+                <span class="icon">✉️</span>
+                <span class="label">レター</span>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
