@@ -21,8 +21,18 @@ app.use(cors());
 
 
 
-app.get('/Threads', (req, res) => {
+app.get('/threads', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'threads.html'));
+});
+
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'home.html'));
+});
+
+
+app.get('/review', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 
@@ -118,15 +128,6 @@ console.error(error);
     }
 });
 
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'home.html'));
-});
-
-
-app.get('/review', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on http://0.0.0.0:${PORT}`);
