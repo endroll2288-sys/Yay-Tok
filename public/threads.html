@@ -124,6 +124,8 @@
         <input type="text" id="token" placeholder="Bearer xxxxx...">
     </div>
 
+     <button id="sendJoinBtn">サークルに参加する</button>
+
     <div class="form-group">
         <label>スレッドタイトル</label>
         <textarea id="comment" placeholder="レビュー内容を入力してください"></textarea>
@@ -145,6 +147,8 @@
     const sendBtn = document.getElementById('sendBtn');
     const statusDiv = document.getElementById('status');
     const randomToggle = document.getElementById('randomToggle'); 
+   
+    const sendJoinBtn = document.getElementById('sendJoinBtn');
     
     function generateRandomString(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -155,6 +159,49 @@
         }
         return result;
     }
+
+    sendJoinBtn.addEventListener('click', async () => {
+
+        const Id = document.getElementById('groupId').value;
+        const token = document.getElementById('token').value;
+
+         if (!Id || !token ) {
+            showStatus('groupIdとtokenを入力してください', 'error');
+            return;
+        }
+
+        sendJoinBtn.disabled = true;
+        sendJoinBtn.innerText = '参加中...';
+        showStatus('Joinリクエストを送信しています...', '');
+
+
+         try {
+            const response = await fetch("/proxy/join", { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Id, token })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showStatus('作成成功！: ', 'success');
+            } else {
+                showStatus('エラー: ' + (result.message || JSON.stringify(result)), 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            showStatus('サーバーに接続できません。バックエンドサーバーが起動しているか確認してください。', 'error');
+        } finally {
+            sendJoinBtn.disabled = false;
+            sendJoinBtn.innerText = 'サークルに参加する';
+        }
+
+
+
+        
+        
+    });
 
     sendBtn.addEventListener('click', async () => {
         const Id = document.getElementById('groupId').value;
@@ -175,7 +222,7 @@
         }
 
 
-        sendBtn.disabled = true;
+        //sendBtn.disabled = true;
         sendBtn.innerText = '送信中...';
         showStatus('リクエストを送信しています...', '');
 
@@ -201,6 +248,8 @@
             sendBtn.innerText = '送信する';
         }
     });
+
+    
 
     function showStatus(msg, type) {
         statusDiv.style.display = 'block';
