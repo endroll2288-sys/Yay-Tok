@@ -89,7 +89,46 @@ console.error(error);
 });
 
 
+app.post('/proxy/join',async(req,res)=>{
 
+
+    const Id = req.body.Id;
+    const token = req.body.token;
+
+     if (!Id || !token ) {
+        return res.status(400).json({ error: 'Missing parameters: groupId and token are required.' });
+    };
+
+    const targetUrl = `https://api.yay.space/v1/groups/${Id}/join`;
+
+       try {
+        const response = await axios({
+            method: 'POST',
+            url: targetUrl,
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization':  `${token}`
+            }
+            
+        });
+        console.log(response);
+        
+        res.status(response.status).json(response.data);
+
+    } catch (error) {
+           
+console.error(error);
+        console.error('Error forwarding request:', error.response?.data || error.message);
+
+       
+        res.status(error.response?.status || 500).json({
+            error: 'Failed to request Yay! API',
+            details: error.response?.data || error.message
+        });
+    }
+
+    
+});
 
 
 app.post('/proxy/review', async (req, res) => {
