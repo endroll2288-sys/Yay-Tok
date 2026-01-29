@@ -40,6 +40,10 @@ app.get('/review', (req, res) => {
 });
 
 
+app.get('/v2/review', (req, res) => {
+    res.sendFile(path.join(__dirname, 'v2', 'review.html'));
+});
+
 
 
 app.post('/proxy/threads', async (req, res) => {
