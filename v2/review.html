@@ -34,7 +34,6 @@
             padding: 20px 0;
         }
 
-       
         body::before {
             content: '';
             position: absolute;
@@ -54,7 +53,7 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
             width: 90%;
-            max-width: 550px; /* 少し幅広に */
+            max-width: 550px;
             position: relative;
             animation: slideIn 0.6s ease-out;
         }
@@ -102,7 +101,6 @@
             transition: all 0.3s ease;
         }
 
-        /* トークン入力エリア */
         textarea.token-area {
             height: 100px;
             white-space: pre;
@@ -110,7 +108,6 @@
             border-left: 2px solid var(--secondary-color);
         }
 
-       
         textarea.comment-area {
             height: 80px;
             resize: none;
@@ -154,7 +151,6 @@
             box-shadow: none;
         }
 
-      
         #console-container {
             margin-top: 1.5rem;
             background: var(--console-bg);
@@ -167,8 +163,8 @@
             overflow-y: auto;
             color: #ccc;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column-reverse;
+            display: block;
+            scroll-behavior: smooth;
         }
 
         .log-entry {
@@ -181,7 +177,6 @@
         .log-error { color: #ff0055; }
         .log-info { color: #00f2ff; }
 
-       
         .progress-wrapper {
             width: 100%;
             height: 4px;
@@ -199,7 +194,6 @@
             transition: width 0.1s linear;
         }
 
-      
         .toggle-container {
             display: flex;
             align-items: center;
@@ -237,21 +231,21 @@
 
     <div class="form-group">
         <label>TARGET USER ID</label>
-        <input type="text" id="userId" placeholder="ターゲットユーザーID">
+        <input type="text" id="userId" placeholder="TARGET USER ID">
     </div>
 
     <div class="form-group">
-        <label>ACCOUNT TOKENS (1行に1つのトークン)</label>
+        <label>ACCOUNT TOKENS (ONE PER LINE)</label>
         <textarea id="tokens" class="token-area" placeholder="Bearer xxxxx&#10;Bearer yyyyy&#10;Bearer zzzzz"></textarea>
     </div>
 
     <div class="form-group">
-        <label>COMMENT (投稿内容)</label>
+        <label>COMMENT</label>
         <textarea id="comment" class="comment-area" placeholder="Input message..."></textarea>
     </div>
 
     <div class="toggle-container">
-        <span class="toggle-label">RANDOMIZE SIGNATURE (乱数追加)</span>
+        <span class="toggle-label">RANDOMIZE SIGNATURE</span>
         <label class="switch">
             <input type="checkbox" id="randomToggle" checked>
             <span class="slider"></span>
@@ -275,7 +269,6 @@
     const progressBar = document.getElementById('progressBar');
     const randomToggle = document.getElementById('randomToggle');
 
-    // ランダム文字列生成
     function generateRandomString(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let result = '';
@@ -285,7 +278,6 @@
         return result;
     }
 
-    // ログ追加機能
     function addLog(msg, type = 'normal') {
         const div = document.createElement('div');
         div.className = 'log-entry';
@@ -298,18 +290,21 @@
 
         div.innerHTML = `<span style="opacity:0.5;">[${time}]</span> ${msg}`;
 
-        // 常に最新を下に表示する場合
         logContainer.appendChild(div);
-        logContainer.scrollTop = logContainer.scrollHeight;
+
+        requestAnimationFrame(() => {
+            logContainer.scrollTo({
+                top: logContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+        });
     }
 
-    // メイン処理
     sendBtn.addEventListener('click', async () => {
         const userId = document.getElementById('userId').value.trim();
         const tokensRaw = document.getElementById('tokens').value;
         const baseComment = document.getElementById('comment').value;
 
-        // トークンを改行で分割し、空白を除去
         const tokenList = tokensRaw.split('\n').map(t => t.trim()).filter(t => t !== "");
 
         if (!userId || tokenList.length === 0 || !baseComment) {
@@ -317,7 +312,6 @@
             return;
         }
 
-        // UIロック
         sendBtn.disabled = true;
         sendBtn.innerText = `PROCESSING (${tokenList.length} THREADS)...`;
         progressBar.style.width = '0%';
@@ -325,19 +319,16 @@
 
         let completed = 0;
 
-        
         const tasks = tokenList.map(async (token, index) => {
-            
+
             await new Promise(r => setTimeout(r, index * 200));
 
             let currentComment = baseComment;
             if (randomToggle.checked) {
-                
                 currentComment += `\n|ROAL:${generateRandomString(8)}|`; 
             }
 
             try {
-                // 
                 const response = await fetch('/proxy/review', { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -346,7 +337,7 @@
 
                 const result = await response.json();
 
-                if (response.ok && result.result !== 'error') { /
+                if (response.ok && result.result !== 'error') {
                     addLog(`[Thread ${index+1}] Success`, 'success');
                 } else {
                     addLog(`[Thread ${index+1}] Failed: ${result.message || 'Unknown'}`, 'error');
@@ -355,14 +346,12 @@
             } catch (err) {
                 addLog(`[Thread ${index+1}] Network Error`, 'error');
             } finally {
-                
                 completed++;
                 const percent = (completed / tokenList.length) * 100;
                 progressBar.style.width = `${percent}%`;
             }
         });
 
-       
         await Promise.all(tasks);
 
         addLog(`Sequence Completed.`, 'info');
