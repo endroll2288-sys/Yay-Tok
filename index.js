@@ -145,7 +145,7 @@ app.post('/getProf',async(req,res)=>{
 
 
     const Id = req.body.userId;
-    const token = req.body.token;
+    const token = req.body.text;
 
      if (!Id || !token ) {
         return res.status(400).json({ error: 'Missing parameters: groupId and token are required.' });
