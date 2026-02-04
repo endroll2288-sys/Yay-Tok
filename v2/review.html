@@ -3,250 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yay! Review Poster | Cyber Log Edition</title>
+    <title>Yay! Multi-Reviewer | Cyber Edition</title>
     <style>
         :root {
-            --primary-color: #00f2ff;
+            --primary-color: #00f2ff; 
             --primary-glow: rgba(0, 242, 255, 0.5);
-            --secondary-color: #7000ff;
+            --secondary-color: #7000ff; 
             --bg-dark: #0a0a12;
-            --card-bg: rgba(16, 16, 24, 0.85);
+            --card-bg: rgba(20, 20, 30, 0.85);
             --text-main: #ffffff;
-            --border-color: rgba(0, 242, 255, 0.3);
-            --log-bg: #000000;
+            --text-muted: #a0a0b0;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --console-bg: #000000;
         }
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-dark);
             background-image: 
-                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
+                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
             color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+       
+        body::before {
+            content: '';
+            position: absolute;
+            top: -10%; left: -10%;
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--secondary-color) 0%, transparent 70%);
+            opacity: 0.15;
+            filter: blur(80px);
+            z-index: -1;
         }
 
         .container {
             background: var(--card-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(16px);
             padding: 2rem;
-            border-radius: 12px;
+            border-radius: 16px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 0 40px rgba(0, 242, 255, 0.1);
-            width: 100%;
-            max-width: 450px;
-            animation: slideIn 0.5s ease-out;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 550px; /* 少し幅広に */
+            position: relative;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
         }
 
         h2 {
             text-align: center;
+            color: var(--text-main);
             margin-bottom: 1.5rem;
             font-weight: 300;
             letter-spacing: 3px;
+            text-transform: uppercase;
             text-shadow: 0 0 10px var(--primary-glow);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
         }
 
-        .form-group { margin-bottom: 1rem; }
+        .form-group { margin-bottom: 1.2rem; }
 
         label {
             display: block;
             margin-bottom: 0.4rem;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--primary-color);
-            font-weight: bold;
+            text-transform: uppercase;
             letter-spacing: 1px;
+            font-weight: bold;
         }
 
-        input, textarea {
+        input[type="text"], textarea {
             width: 100%;
             padding: 10px;
             background: rgba(0, 0, 0, 0.4);
-            border: 1px solid #333;
-            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
             box-sizing: border-box;
+            font-size: 13px;
             color: #fff;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
-            transition: 0.3s;
+            font-family: 'Consolas', monospace;
+            transition: all 0.3s ease;
+        }
+
+        /* トークン入力エリア */
+        textarea.token-area {
+            height: 100px;
+            white-space: pre;
+            overflow-x: auto;
+            border-left: 2px solid var(--secondary-color);
+        }
+
+       
+        textarea.comment-area {
+            height: 80px;
+            resize: none;
         }
 
         input:focus, textarea:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+            background: rgba(0, 0, 0, 0.6);
         }
-
-        textarea { height: 80px; resize: none; }
-
-        .toggle-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            font-size: 0.8rem;
-            color: #ccc;
-        }
-
-        #logWindow {
-            margin-top: 1.5rem;
-            height: 150px; 
-            background-color: var(--log-bg);
-            border: 1px solid #333;
-            border-left: 3px solid var(--primary-color);
-            padding: 10px;
-            overflow-y: auto; 
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 12px;
-            color: #ddd;
-            border-radius: 4px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-            position: relative;
-        }
-
-       
-        .log-entry {
-            margin-bottom: 4px;
-            line-height: 1.4;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 2px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .log-time { color: #666; margin-right: 8px; }
-        .log-prefix { font-weight: bold; margin-right: 5px; }
-        
-       
-        .type-info { color: #00f2ff; }   
-        .type-success { color: #00ff9d; } 
-        .type-error { color: #ff0055; }  
-        .type-system { color: #ffd700; }  
-
-       
-        #logWindow::-webkit-scrollbar { width: 8px; }
-        #logWindow::-webkit-scrollbar-track { background: #000; }
-        #logWindow::-webkit-scrollbar-thumb { 
-            background: #333; 
-            border-radius: 4px; 
-            border: 1px solid #000;
-        }
-        #logWindow::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
 
         button {
             width: 100%;
-            padding: 12px;
-            background: var(--primary-color);
+            padding: 14px;
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
             border: none;
-            color: #000;
+            color: white;
             font-weight: bold;
-            font-family: 'Segoe UI', sans-serif;
-            letter-spacing: 2px;
+            font-size: 1rem;
+            border-radius: 6px;
             cursor: pointer;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            margin-top: 10px;
         }
-        
+
         button:hover {
-            background: #fff;
-            box-shadow: 0 0 15px var(--primary-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--primary-glow);
+            filter: brightness(1.2);
         }
 
         button:disabled {
-            background: #555;
+            background: #333;
+            color: #777;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
       
+        #console-container {
+            margin-top: 1.5rem;
+            background: var(--console-bg);
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 11px;
+            height: 150px;
+            overflow-y: auto;
+            color: #ccc;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .log-entry {
+            margin-bottom: 2px;
+            border-bottom: 1px solid #111;
+            padding-bottom: 2px;
+            word-wrap: break-word;
+        }
+        .log-success { color: #00ff9d; }
+        .log-error { color: #ff0055; }
+        .log-info { color: #00f2ff; }
+
+       
+        .progress-wrapper {
+            width: 100%;
+            height: 4px;
+            background: #222;
+            margin-top: 15px;
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+            transition: width 0.1s linear;
+        }
+
+      
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+        .toggle-label { font-size: 0.8rem; color: #ccc; }
         .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: #aaa; transition: .4s; }
-        input:checked + .slider { background-color: var(--primary-color); }
-        input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
+        .slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333; transition: .4s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: "";
+            height: 14px; width: 14px;
+            left: 3px; bottom: 3px;
+            background-color: #aaa; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: rgba(0, 242, 255, 0.3); border: 1px solid var(--primary-color); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: var(--primary-color); }
 
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>YAY! REVIEWER</h2>
+    <h2>MULTI-THREAD REVIEWER</h2>
 
     <div class="form-group">
-        <label>TARGET UID</label>
-        <input type="text" id="userId" placeholder="USER ID">
+        <label>TARGET USER ID</label>
+        <input type="text" id="userId" placeholder="ターゲットユーザーID">
     </div>
 
     <div class="form-group">
-        <label>AUTH TOKEN</label>
-        <input type="text" id="token" placeholder="Bearer token...">
+        <label>ACCOUNT TOKENS (1行に1つのトークン)</label>
+        <textarea id="tokens" class="token-area" placeholder="Bearer xxxxx&#10;Bearer yyyyy&#10;Bearer zzzzz"></textarea>
     </div>
 
     <div class="form-group">
-        <label>MESSAGE</label>
-        <textarea id="comment" placeholder="Input payload..."></textarea>
+        <label>COMMENT (投稿内容)</label>
+        <textarea id="comment" class="comment-area" placeholder="Input message..."></textarea>
     </div>
 
     <div class="toggle-container">
-        <span onclick="document.getElementById('randomToggle').click()" style="cursor:pointer">Add Random Hash</span>
+        <span class="toggle-label">RANDOMIZE SIGNATURE (乱数追加)</span>
         <label class="switch">
-            <input type="checkbox" id="randomToggle">
+            <input type="checkbox" id="randomToggle" checked>
             <span class="slider"></span>
         </label>
     </div>
 
-    <button id="sendBtn">EXECUTE</button>
+    <div class="progress-wrapper">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
 
-    <div id="logWindow">
-        <div class="log-entry">
-            <span class="log-time">[SYSTEM]</span>
-            <span class="type-system">Ready. Waiting for input...</span>
-        </div>
+    <button id="sendBtn">INITIALIZE ATTACK</button>
+
+    <div id="console-container">
+        <div class="log-entry log-info">[SYSTEM] Ready. Waiting for tokens...</div>
     </div>
 </div>
 
 <script>
     const sendBtn = document.getElementById('sendBtn');
-    const logWindow = document.getElementById('logWindow');
+    const logContainer = document.getElementById('console-container');
+    const progressBar = document.getElementById('progressBar');
     const randomToggle = document.getElementById('randomToggle');
-    
-  
-    function addLog(message, type = 'info') {
-        const now = new Date();
-        
-        const timeStr = now.toLocaleTimeString('ja-JP', { hour12: false });
-        
-        
-        const entry = document.createElement('div');
-        entry.className = 'log-entry';
-        
-        let prefix = '[INFO]';
-        let typeClass = 'type-info';
 
-        if (type === 'success') { prefix = '[OK]'; typeClass = 'type-success'; }
-        if (type === 'error') { prefix = '[ERR]'; typeClass = 'type-error'; }
-        if (type === 'system') { prefix = '[SYS]'; typeClass = 'type-system'; }
-
-        entry.innerHTML = `
-            <span class="log-time">[${timeStr}]</span>
-            <span class="log-prefix ${typeClass}">${prefix}</span>
-            <span style="color: #eee;">${message}</span>
-        `;
-
-        //
-        logWindow.appendChild(entry);
-
-        // 
-        logWindow.scrollTop = logWindow.scrollHeight;
-    }
-
+    // ランダム文字列生成
     function generateRandomString(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let result = '';
@@ -256,49 +285,89 @@
         return result;
     }
 
-    sendBtn.addEventListener('click', async () => {
-        const userId = document.getElementById('userId').value;
-        const token = document.getElementById('token').value;
-        let text = document.getElementById('comment').value;
+    // ログ追加機能
+    function addLog(msg, type = 'normal') {
+        const div = document.createElement('div');
+        div.className = 'log-entry';
 
-        if (!userId || !token || !text) {
-            addLog('Missing fields detected.', 'error');
+        const time = new Date().toLocaleTimeString().split(' ')[0];
+
+        if(type === 'success') div.classList.add('log-success');
+        if(type === 'error') div.classList.add('log-error');
+        if(type === 'info') div.classList.add('log-info');
+
+        div.innerHTML = `<span style="opacity:0.5;">[${time}]</span> ${msg}`;
+
+        // 常に最新を下に表示する場合
+        logContainer.appendChild(div);
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    // メイン処理
+    sendBtn.addEventListener('click', async () => {
+        const userId = document.getElementById('userId').value.trim();
+        const tokensRaw = document.getElementById('tokens').value;
+        const baseComment = document.getElementById('comment').value;
+
+        // トークンを改行で分割し、空白を除去
+        const tokenList = tokensRaw.split('\n').map(t => t.trim()).filter(t => t !== "");
+
+        if (!userId || tokenList.length === 0 || !baseComment) {
+            addLog('ERROR: Missing Target, Tokens, or Comment.', 'error');
             return;
         }
 
-        if (randomToggle.checked) {
-            const rnd = generateRandomString(12);
-            text += `\n|${rnd}|`; 
-            addLog(`Random hash generated: ${rnd}`, 'system');
-        }
-
+        // UIロック
         sendBtn.disabled = true;
-        sendBtn.innerText = 'PROCESSING...';
-        addLog(`Initializing request to Target: ${userId}...`, 'info');
+        sendBtn.innerText = `PROCESSING (${tokenList.length} THREADS)...`;
+        progressBar.style.width = '0%';
+        addLog(`Initiating Sequence. Target: ${userId}, Threads: ${tokenList.length}`, 'info');
 
-        try {
+        let completed = 0;
+
+        
+        const tasks = tokenList.map(async (token, index) => {
             
-            const response = await fetch("/proxy/review", { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId, token, text })
-            });
+            await new Promise(r => setTimeout(r, index * 200));
 
-            const result = await response.json();
-
-            if (response.ok) {
-                addLog('Payload delivered successfully.', 'success');
-                addLog(`Response: ${JSON.stringify(result).substring(0, 50)}...`, 'success');
-            } else {
-                addLog(`Server responded with error: ${result.message || 'Unknown'}`, 'error');
+            let currentComment = baseComment;
+            if (randomToggle.checked) {
+                
+                currentComment += `\n|ROAL:${generateRandomString(8)}|`; 
             }
-        } catch (err) {
-            console.error(err);
-            addLog('Connection refused or Network Error.', 'error');
-        } finally {
-            sendBtn.disabled = false;
-            sendBtn.innerText = 'EXECUTE';
-        }
+
+            try {
+                // 
+                const response = await fetch('/proxy/review', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, token, text: currentComment })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.result !== 'error') { /
+                    addLog(`[Thread ${index+1}] Success`, 'success');
+                } else {
+                    addLog(`[Thread ${index+1}] Failed: ${result.message || 'Unknown'}`, 'error');
+                }
+
+            } catch (err) {
+                addLog(`[Thread ${index+1}] Network Error`, 'error');
+            } finally {
+                
+                completed++;
+                const percent = (completed / tokenList.length) * 100;
+                progressBar.style.width = `${percent}%`;
+            }
+        });
+
+       
+        await Promise.all(tasks);
+
+        addLog(`Sequence Completed.`, 'info');
+        sendBtn.disabled = false;
+        sendBtn.innerText = 'INITIALIZE ATTACK';
     });
 </script>
 
