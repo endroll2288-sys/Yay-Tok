@@ -46,7 +46,7 @@ app.get('/review', (req, res) => {
 
 app.get('/v2/review', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'review.html'));
-});ubli
+});
 
 app.get('/v2/threads', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'threads.html'));
