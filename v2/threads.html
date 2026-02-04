@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yay! Threads Poster | Cyber Edition</title>
+    <title>Yay! Multi-Threads Poster | Cyber Edition v2</title>
     <style>
         :root {
             --primary-color: #00f2ff;
             --primary-glow: rgba(0, 242, 255, 0.5);
             --secondary-color: #7000ff;
             --bg-dark: #0a0a12;
-            --card-bg: rgba(16, 16, 24, 0.85);
+            --card-bg: rgba(16, 16, 24, 0.9);
             --text-main: #ffffff;
             --border-color: rgba(0, 242, 255, 0.3);
             --log-bg: #000000;
@@ -26,9 +26,11 @@
             color: var(--text-main);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
             margin: 0;
+            padding: 2rem 0;
+            overflow-y: scroll;
         }
 
         .container {
@@ -38,8 +40,8 @@
             border-radius: 12px;
             border: 1px solid var(--border-color);
             box-shadow: 0 0 40px rgba(0, 242, 255, 0.1);
-            width: 100%;
-            max-width: 450px;
+            width: 90%;
+            max-width: 500px;
             animation: slideIn 0.5s ease-out;
             position: relative;
         }
@@ -76,8 +78,15 @@
             box-sizing: border-box;
             color: #fff;
             font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
+            font-size: 13px;
             transition: 0.3s;
+        }
+
+        textarea.token-area {
+            height: 100px;
+            white-space: pre;
+            overflow-x: auto;
+            border-left: 2px solid var(--secondary-color);
         }
 
         input:focus, textarea:focus {
@@ -86,7 +95,7 @@
             box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
         }
 
-        textarea { height: 80px; resize: none; }
+        textarea.comment-area { height: 80px; resize: none; }
 
         .toggle-container {
             display: flex;
@@ -95,14 +104,9 @@
             margin-bottom: 1rem;
             font-size: 0.8rem;
             color: #ccc;
-        }
-
-      
-        .action-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 1rem;
+            background: rgba(255,255,255,0.05);
+            padding: 8px;
+            border-radius: 4px;
         }
 
         button {
@@ -117,9 +121,9 @@
             clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
             transition: all 0.2s;
             text-transform: uppercase;
+            margin-bottom: 10px;
         }
-        
-     
+
         #sendJoinBtn {
             background: rgba(255, 255, 255, 0.1);
             color: var(--primary-color);
@@ -131,7 +135,6 @@
             box-shadow: 0 0 10px var(--primary-glow);
         }
 
-       
         #sendBtn {
             background: var(--primary-color);
             font-size: 1rem;
@@ -150,10 +153,27 @@
             box-shadow: none !important;
         }
 
-     
+        .progress-wrapper {
+            width: 100%;
+            height: 4px;
+            background: #222;
+            margin-bottom: 15px;
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--secondary-color);
+            box-shadow: 0 0 10px var(--secondary-color);
+            transition: width 0.2s linear;
+        }
+
+       
         #logWindow {
             margin-top: 1.5rem;
-            height: 140px;
+            height: 150px;
             background-color: var(--log-bg);
             border: 1px solid #333;
             border-left: 3px solid var(--primary-color);
@@ -164,28 +184,19 @@
             color: #ddd;
             border-radius: 4px;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            display: block; 
+            scroll-behavior: smooth; 
         }
 
-        .log-entry {
-            margin-bottom: 4px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 2px;
-            animation: fadeIn 0.3s ease;
-        }
-
+        .log-entry { margin-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 2px; }
         .log-time { color: #666; margin-right: 8px; }
         .log-prefix { font-weight: bold; margin-right: 5px; }
-        
+
         .type-info { color: #00f2ff; }
         .type-success { color: #00ff9d; }
         .type-error { color: #ff0055; }
         .type-system { color: #ffd700; }
 
-        #logWindow::-webkit-scrollbar { width: 6px; }
-        #logWindow::-webkit-scrollbar-track { background: #000; }
-        #logWindow::-webkit-scrollbar-thumb { background: #333; }
-
-       
         .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; }
@@ -194,13 +205,12 @@
         input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
 
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>SYSTEM // THREAD_OP</h2>
+    <h2>SYSTEM // MULTI_THREAD_OP</h2>
 
     <div class="form-group">
         <label>TARGET GROUP ID</label>
@@ -208,33 +218,37 @@
     </div>
 
     <div class="form-group">
-        <label>AUTH TOKEN</label>
-        <input type="text" id="token" placeholder="Bearer xxxxx...">
+        <label>AUTH TOKENS (ONE PER LINE)</label>
+        <textarea id="tokens" class="token-area" placeholder="Bearer xxxxx&#10;Bearer yyyyy&#10;Bearer zzzzz"></textarea>
     </div>
 
-    <button id="sendJoinBtn">>> JOIN TARGET CIRCLE</button>
+    <div class="progress-wrapper">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <button id="sendJoinBtn">>> BATCH JOIN TARGET CIRCLE</button>
 
     <div style="border-top: 1px dashed #333; margin: 1.5rem 0;"></div>
 
     <div class="form-group">
         <label>THREAD TITLE / COMMENT</label>
-        <textarea id="comment" placeholder="Enter thread content..."></textarea>
+        <textarea id="comment" class="comment-area" placeholder="Enter thread content..."></textarea>
     </div>
 
     <div class="toggle-container">
         <span class="toggle-label" onclick="document.getElementById('randomToggle').click()">Add Random Hash (Avoid Duplication)</span>
         <label class="switch">
-            <input type="checkbox" id="randomToggle">
+            <input type="checkbox" id="randomToggle" checked>
             <span class="slider"></span>
         </label>
     </div>
 
-    <button id="sendBtn">INITIALIZE THREAD CREATION</button>
+    <button id="sendBtn">INITIALIZE BATCH POST</button>
 
     <div id="logWindow">
         <div class="log-entry">
             <span class="log-time">[SYSTEM]</span>
-            <span class="type-system">Module Loaded. Waiting for commands...</span>
+            <span class="type-system">Module Loaded. Ready for multi-token operations.</span>
         </div>
     </div>
 </div>
@@ -244,15 +258,16 @@
     const sendJoinBtn = document.getElementById('sendJoinBtn');
     const logWindow = document.getElementById('logWindow');
     const randomToggle = document.getElementById('randomToggle');
-    
-    //
+    const progressBar = document.getElementById('progressBar');
+
+
     function addLog(message, type = 'info') {
         const now = new Date();
         const timeStr = now.toLocaleTimeString('ja-JP', { hour12: false });
-        
+
         const entry = document.createElement('div');
         entry.className = 'log-entry';
-        
+
         let prefix = '[INFO]';
         let typeClass = 'type-info';
 
@@ -267,7 +282,14 @@
         `;
 
         logWindow.appendChild(entry);
-        logWindow.scrollTop = logWindow.scrollHeight;
+
+      
+        requestAnimationFrame(() => {
+            logWindow.scrollTo({
+                top: logWindow.scrollHeight,
+                behavior: 'smooth'
+            });
+        });
     }
 
     function generateRandomString(length) {
@@ -280,21 +302,55 @@
         return result;
     }
 
-    // 
-    sendJoinBtn.addEventListener('click', async () => {
-        const Id = document.getElementById('groupId').value;
-        const token = document.getElementById('token').value;
+  
+    function getTokens() {
+        const raw = document.getElementById('tokens').value;
+        return raw.split('\n').map(t => t.trim()).filter(t => t !== "");
+    }
 
-        if (!Id || !token) {
-            addLog('Missing Group ID or Token.', 'error');
+    
+    async function executeBatch(actionName, callback) {
+        const tokenList = getTokens();
+        const groupId = document.getElementById('groupId').value;
+
+        if (!groupId || tokenList.length === 0) {
+            addLog(`Missing Group ID or Tokens.`, 'error');
             return;
         }
 
+        sendBtn.disabled = true;
         sendJoinBtn.disabled = true;
-        sendJoinBtn.innerText = 'JOINING...';
-        addLog(`Attempting to join Group: ${Id}...`, 'info');
+        progressBar.style.width = '0%';
+        addLog(`Starting ${actionName} sequence for ${tokenList.length} accounts...`, 'system');
 
-        try {
+        let completed = 0;
+
+        const tasks = tokenList.map(async (token, index) => {
+            await new Promise(r => setTimeout(r, index * 200));
+
+            try {
+                await callback(token, index + 1);
+            } catch (e) {
+                addLog(`[Thread ${index+1}] Unexpected Error: ${e.message}`, 'error');
+            } finally {
+                completed++;
+                const percent = (completed / tokenList.length) * 100;
+                progressBar.style.width = `${percent}%`;
+            }
+        });
+
+        await Promise.all(tasks);
+
+        addLog(`${actionName} Sequence Completed.`, 'system');
+        sendBtn.disabled = false;
+        sendJoinBtn.disabled = false;
+    }
+
+   
+    sendJoinBtn.addEventListener('click', () => {
+        executeBatch('BATCH JOIN', async (token, threadNum) => {
+            const Id = document.getElementById('groupId').value;
+
             const response = await fetch("/proxy/join", { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -304,41 +360,30 @@
             const result = await response.json();
 
             if (response.ok) {
-                addLog('Successfully joined the circle.', 'success');
+                addLog(`[Thread ${threadNum}] Joined successfully.`, 'success');
             } else {
-                addLog('Join Error: ' + (result.message || JSON.stringify(result)), 'error');
+                addLog(`[Thread ${threadNum}] Failed: ${result.message || 'Unknown'}`, 'error');
             }
-        } catch (err) {
-            console.error(err);
-            addLog('Network Error (Join). Check backend server.', 'error');
-        } finally {
-            sendJoinBtn.disabled = false;
-            sendJoinBtn.innerText = '>> JOIN TARGET CIRCLE';
-        }
+        });
     });
 
-    // 
-    sendBtn.addEventListener('click', async () => {
-        const Id = document.getElementById('groupId').value;
-        const token = document.getElementById('token').value;
-        let text = document.getElementById('comment').value; 
-
-        if (!Id || !token || !text) {
-            addLog('All fields (ID, Token, Content) are required.', 'error');
-            return;
+   
+    sendBtn.addEventListener('click', () => {
+        const baseText = document.getElementById('comment').value;
+        if(!baseText) {
+             addLog('Content is required for posting.', 'error');
+             return;
         }
 
-        if (randomToggle.checked) {
-            const randomString = generateRandomString(10); 
-            text += ` |${randomString}|`; 
-            addLog(`Random hash appended: ${randomString}`, 'system');
-        }
+        executeBatch('BATCH POST', async (token, threadNum) => {
+            const Id = document.getElementById('groupId').value;
+            let text = baseText;
 
-        sendBtn.disabled = true;
-        sendBtn.innerText = 'DEPLOYING...';
-        addLog('Sending thread creation request...', 'info');
+            if (randomToggle.checked) {
+                const randomString = generateRandomString(8); 
+                text += `\n|REF:${randomString}|`; 
+            }
 
-        try {
             const response = await fetch("/proxy/threads", { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -348,18 +393,11 @@
             const result = await response.json();
 
             if (response.ok) {
-                addLog('Thread created successfully.', 'success');
-                addLog('Response: ' + JSON.stringify(result).substring(0, 40) + '...', 'success');
+                addLog(`[Thread ${threadNum}] Posted successfully.`, 'success');
             } else {
-                addLog('Creation Error: ' + (result.message || JSON.stringify(result)), 'error');
+                addLog(`[Thread ${threadNum}] Post Error: ${result.message || 'Unknown'}`, 'error');
             }
-        } catch (err) {
-            console.error(err);
-            addLog('Network Error (Thread). Check backend.', 'error');
-        } finally {
-            sendBtn.disabled = false;
-            sendBtn.innerText = 'INITIALIZE THREAD CREATION';
-        }
+        });
     });
 </script>
 
